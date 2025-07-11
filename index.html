@@ -91,7 +91,7 @@
     margin-top: 30px;
     font-size: 1.3em;
     font-weight: 500;
-    color: #d32f2f;
+    color: #4a4a4a; /* 全体の文字色に合わせる */
     background-color: #ffebee;
     border: 2px dashed #ff8a80;
     padding: 20px;
@@ -119,11 +119,22 @@
     border-radius: 8px;
     color: white;
   }
+  #roomCode { /* 部屋のコード表示用 - 新規追加 */
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #3f51b5; /* 青系 */
+    margin-top: 10px;
+  }
   .red-room {
     background-color: #e57373; /* 赤系 */
   }
   .blue-room {
     background-color: #64b5f6; /* 青系 */
+  }
+  #closeInstruction { /* 閉じる指示のスタイル */
+    font-size: 0.9em;
+    color: #757575;
+    margin-top: 25px; /* 結果との間にスペース */
   }
 </style>
 </head>
@@ -167,6 +178,9 @@
     <div id="resultDescription"></div>
     <div id="compatibleType"></div>
     <div id="roomAssignment"></div>
+    <div id="roomCode"></div> <div id="closeInstruction">
+      閉じるときは右上の×をクリック！
+    </div>
   </div>
 </div>
 
@@ -192,7 +206,8 @@
       let resultType = "";
       let resultDescription = "";
       let compatibleType = "";
-      let room = "";
+      let room = ""; // 部屋の指示 (red_room / blue_room)
+      let roomCode = ""; // 部屋のコード
 
       const type = q1.value;
 
@@ -202,48 +217,56 @@
           resultDescription = "あなたは**控えめながらも芯の強さを持つ、繊細なタイプ**です。誰にでも優しく、周りに安心感を与えます。急がず、じっくりと関係を深めることで、本質的な出会いへと繋がるでしょう。";
           compatibleType = "相性の良い人は、あなたの情熱を引き出してくれる**濃厚味噌タイプ**の人です！";
           room = "red_room";
+          roomCode = "53"; // 赤い部屋のコード
           break;
         case "noukou_miso":
           resultType = "💪 濃厚味噌タイプ 💪";
           resultDescription = "あなたは**情熱的でパワフル、一度決めたらとことん突き進むリーダーシップのあるタイプ**です。面倒見が良く、周囲を巻き込む力があります。時には強引な一面もありますが、その情熱が魅力です。";
           compatibleType = "相性の良い人は、あなたの情熱を受け止めてくれる**あっさり醤油タイプ**の人です！";
           room = "blue_room";
+          roomCode = "28"; // 青い部屋のコード
           break;
         case "shoga_shoyu":
           resultType = "♨️ 生姜醤油の温かみタイプ ♨️";
           resultDescription = "あなたは**温かく、人の心を癒すような包容力を持つ、思いやり深いタイプ**です。常に相手を気遣い、細やかな気配りができます。周りからは頼られる存在ですが、自分自身のことも大切に。";
           compatibleType = "相性の良い人は、あなたの優しさに惹かれる**燕三条系背脂タイプ**の人です！";
           room = "red_room";
+          roomCode = "53"; // 赤い部屋のコード
           break;
         case "tsubamesanjo_seabura":
           resultType = "🔩 燕三条系背脂タイプ 🔩";
           resultDescription = "あなたは**見た目とは裏腹に、意外と繊細な一面も持つ職人気質タイプ**です。自分のこだわりを大切にし、一度心を開くと深く長く付き合う傾向があります。";
           compatibleType = "相性の良い人は、あなたの個性を理解し、温かく見守ってくれる**生姜醤油タイプ**の人です！";
           room = "blue_room";
+          roomCode = "28"; // 青い部屋のコード
           break;
         case "sanjo_curry":
           resultType = "🍛 三条カレーラーメンタイプ 🍛";
           resultDescription = "あなたは**個性的でユニーク、常に新しいことに興味を持つ探求心旺盛なタイプ**です。既存の枠にとらわれない自由な発想を持ち、周囲を驚かせることがあります。";
           compatibleType = "相性の良い人は、あなたのユニークな魅力を共に楽しめる**濃厚味噌タイプ**または**燕三条系背脂タイプ**の人です！";
           room = "blue_room";
+          roomCode = "28"; // 青い部屋のコード
           break;
         case "none": // どれも好きじゃない場合
           resultType = "🤔 ラーメンの枠を超越タイプ 🤔";
           resultDescription = "あなたは**特定のジャンルに囚われず、常に自分らしい道を模索する自由な心の持ち主**です。一般的な型にはまらない発想力があり、独自の価値観を大切にします。";
           compatibleType = "相性の良い人は、あなたのユニークな視点を理解し、新しい世界を一緒に開拓してくれる**三条カレーラーメンタイプ**の人です！";
-          room = "red_room"; // こちらは赤の部屋に割り当ててみましょう
+          room = "red_room";
+          roomCode = "53"; // 赤い部屋のコード
           break;
         case "all": // 全部好きの場合
           resultType = "🍜 全肯定ラーメン愛タイプ 🍜";
           resultDescription = "あなたは**どんな人とも打ち解けられる、非常に柔軟で包容力のあるタイプ**です。多様な価値観を受け入れ、誰とでも円満な関係を築けます。その広い心で、出会いの場でも人気者になるでしょう。";
           compatibleType = "相性の良い人は、どんなタイプでもあなたと楽しく過ごせるでしょう。特に、あなたのリーダーシップを引き出す**濃厚味噌タイプ**の人との相性も良いです！";
-          room = "blue_room"; // こちらは青の部屋に割り当ててみましょう
+          room = "blue_room";
+          roomCode = "28"; // 青い部屋のコード
           break;
         default:
           resultType = "診断できませんでした";
           resultDescription = "ラーメンを選んで再度お試しください。";
           compatibleType = "";
           room = "";
+          roomCode = "";
       }
 
       // ローディングメッセージを非表示にして結果を表示
@@ -258,6 +281,8 @@
       const roomAssignmentElement = document.getElementById("roomAssignment");
       roomAssignmentElement.innerText = `あなたは${room === "red_room" ? "赤い部屋" : "青い部屋"}へどうぞ！`;
       roomAssignmentElement.className = room === "red_room" ? "red-room" : "blue-room";
+
+      document.getElementById("roomCode").innerText = `部屋コード: ${roomCode}`; // 部屋のコードを表示
 
     }, 2000); // 2000ミリ秒 = 2秒後に実行
   }
